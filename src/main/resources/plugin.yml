@@ -1,0 +1,20 @@
+name: Judexis
+main: judexis.JudexisPlugin
+version: 5.0-BetaTest
+author: Judexis Team
+depend: [ProtocolLib]
+commands:
+  judexis:
+    aliases: [ac]
+    description: Judexis enterprise command.
+permissions:
+  judexis.console:
+    default: op
+  judexis.owner:
+    default: op
+  judexis.profile:
+    default: op
+  judexis.panic:
+    default: op
+  judexis.enforcement:
+    default: op
