@@ -9,6 +9,8 @@ The project enforces a strict separation between **detection logic** and **platf
 - `judexis-core` owns domain state, snapshot processing, check lifecycle orchestration, evidence aggregation, and decision projection.
 - `judexis-adapter-1_8` is a Bukkit/Paper 1.8.8 bridge that only captures platform events and maps them into core snapshots.
 - No code in `judexis-core` references Bukkit, Spigot, Paper, NMS, ProtocolLib, or any game API.
+- No code in the core module references Bukkit, Spigot, Paper, NMS, ProtocolLib, or any game API.
+- The core receives normalized snapshots and outputs neutral decisions so downstream integrations can decide what to do with results.
 
 This approach keeps the detection system deterministic, testable, and portable across platforms.
 
