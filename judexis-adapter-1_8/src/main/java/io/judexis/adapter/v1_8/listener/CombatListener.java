@@ -45,15 +45,6 @@ public final class CombatListener implements Listener {
         if (profile == null) {
             return;
         }
-
-        Entity damaged = event.getEntity();
-        if (damaged instanceof Player) {
-            Player victim = (Player) damaged;
-            PlayerProfile victimProfile = sessionManager.get(victim.getUniqueId());
-            if (victimProfile != null) {
-                coreEngine.markVelocity(victimProfile);
-            }
-        }
         int ping = pingEstimator.estimate(attacker);
         coreEngine.setPingEstimateMillis(profile, ping);
         coreEngine.ingest(profile, snapshotBridge.combatPulse(event, tickTask.getTick(), ping));

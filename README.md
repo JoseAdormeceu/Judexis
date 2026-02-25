@@ -4,11 +4,15 @@ Judexis is a modular anti-cheat foundation designed for high-frequency game serv
 
 ## Architectural philosophy
 
-The project enforces strict separation between detection runtime and platform glue:
+The project enforces a strict separation between **detection logic** and **platform adapters**:
 
-- `judexis-core` contains snapshot dispatching, check registry/manager, player runtime data store, evidence routing, rolling violation policy, and decision events.
-- `judexis-adapter-1_8` captures Bukkit/Paper 1.8 events and translates them into core snapshots.
-- Core remains independent of Bukkit/Spigot/Paper/NMS/ProtocolLib.
+- `judexis-core` owns domain state, snapshot processing, check lifecycle orchestration, evidence aggregation, and decision projection.
+- `judexis-adapter-1_8` is a Bukkit/Paper 1.8.8 bridge that only captures platform events and maps them into core snapshots.
+- No code in `judexis-core` references Bukkit, Spigot, Paper, NMS, ProtocolLib, or any game API.
+- No code in the core module references Bukkit, Spigot, Paper, NMS, ProtocolLib, or any game API.
+- The core receives normalized snapshots and outputs neutral decisions so downstream integrations can decide what to do with results.
+
+This approach keeps the detection system deterministic, testable, and portable across platforms.
 
 ## Module layout
 
@@ -19,57 +23,44 @@ judexis/
  ├─ README.md
  ├─ judexis-core/
  │    ├─ build.gradle
- │    ├─ libs/ (optional local junit jars)
  │    └─ src/main/java/io/judexis/core/
- │         ├─ check/
- │         ├─ context/
- │         ├─ data/
- │         ├─ decision/
  │         ├─ domain/
- │         ├─ pipeline/
  │         ├─ snapshot/
+ │         ├─ context/
+ │         ├─ pipeline/
+ │         ├─ check/
  │         ├─ violation/
- │         └─ debug/
+ │         └─ decision/
  └─ judexis-adapter-1_8/
       ├─ build.gradle
-      ├─ libs/ (optional local Paper API jar)
       └─ src/main/java/io/judexis/adapter/v1_8/
+           ├─ listener/
+           ├─ session/
+           ├─ tracker/
+           └─ bridge/
 ```
 
-## Check System v1
+## Adapter integration model
 
-Core now includes:
+Adapters follow this pipeline:
 
-- `CheckRegistry` and `CheckManager` for id/category registration and lifecycle.
-- `CheckConfiguration` for in-memory runtime enable/disable toggles.
-- `PlayerDataStore` with per-player `ContextState`, `ViolationAccumulator`, and per-check state slots.
-- `EvidenceRouter` + `ViolationPolicy` to record evidence and compute rolling check/global scores.
-- `DecisionEventBus` stream with `DecisionEventListener` subscription.
+1. Capture platform events/packets.
+2. Convert them to core snapshots (`MovementSnapshot`, `NetworkSnapshot`, `WorldSnapshot`).
+3. Resolve/create `PlayerProfile` in a session registry.
+4. Publish snapshots through `JudexisCoreEngine#ingest(...)`.
+5. Consume the returned `Decision` externally if policy actions are desired.
 
-## Adapter runtime surface
+## Why separation is enforced
 
-`judexis-adapter-1_8` provides:
+- **Performance**: hot-path code remains focused on primitive state updates and predictable iteration.
+- **Reliability**: no classpath coupling to volatile Minecraft internals in the core.
+- **Testability**: core behavior can be validated with pure JVM unit tests.
+- **Portability**: one core implementation can power many runtime adapters.
 
-- Event capture for `PlayerJoinEvent`, `PlayerQuitEvent`, `PlayerMoveEvent`, `EntityDamageByEntityEvent`.
-- Tick heartbeat updating ping/TPS context.
-- `/judexis debug <player>` for runtime telemetry and last evidence entries.
-- `/judexis toggle <checkId> on|off` for in-memory check toggling (op only).
-
-## Offline-friendly build setup
-
-If repository access is blocked:
-
-1. **Core tests**: place `junit-platform-console-standalone-1.10.2.jar` in:
-   - `judexis-core/libs/junit-platform-console-standalone-1.10.2.jar`
-2. **Adapter compile**: place Paper API jar in:
-   - `judexis-adapter-1_8/libs/paperspigot-api-1.8.8-R0.1-SNAPSHOT.jar`
-
-Both modules are configured to use local jars first, then remote repositories.
-
-## Build commands
+## Build and test
 
 ```bash
 ./gradlew :judexis-core:compileJava
-./gradlew :judexis-core:test
 ./gradlew :judexis-adapter-1_8:compileJava
+./gradlew test
 ```

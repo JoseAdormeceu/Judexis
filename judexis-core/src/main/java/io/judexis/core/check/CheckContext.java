@@ -1,25 +1,22 @@
 package io.judexis.core.check;
 
 import io.judexis.core.context.ContextState;
-import io.judexis.core.data.PlayerData;
 import io.judexis.core.domain.PlayerProfile;
 import io.judexis.core.violation.Evidence;
-import io.judexis.core.violation.EvidenceRouter;
+import io.judexis.core.violation.ViolationAccumulator;
 
 /**
  * Context passed to checks on each dispatch.
  */
 public final class CheckContext {
     private final PlayerProfile profile;
-    private final PlayerData playerData;
-    private final EvidenceRouter evidenceRouter;
-    private final String checkId;
+    private final ContextState contextState;
+    private final ViolationAccumulator violationAccumulator;
 
-    public CheckContext(PlayerProfile profile, PlayerData playerData, EvidenceRouter evidenceRouter, String checkId) {
+    public CheckContext(PlayerProfile profile, ContextState contextState, ViolationAccumulator violationAccumulator) {
         this.profile = profile;
-        this.playerData = playerData;
-        this.evidenceRouter = evidenceRouter;
-        this.checkId = checkId;
+        this.contextState = contextState;
+        this.violationAccumulator = violationAccumulator;
     }
 
     public PlayerProfile getProfile() {
@@ -27,22 +24,14 @@ public final class CheckContext {
     }
 
     public ContextState getContextState() {
-        return playerData.getContextState();
+        return contextState;
+    }
+
+    public ViolationAccumulator getViolationAccumulator() {
+        return violationAccumulator;
     }
 
     public void emit(Evidence evidence) {
-        evidenceRouter.route(profile, checkId, evidence, playerData);
-    }
-
-    public <T> T getCheckState(String stateKey, Class<T> type) {
-        Object state = playerData.getCheckState(checkId + ":" + stateKey);
-        if (state == null) {
-            return null;
-        }
-        return type.cast(state);
-    }
-
-    public void setCheckState(String stateKey, Object state) {
-        playerData.setCheckState(checkId + ":" + stateKey, state);
+        violationAccumulator.append(evidence);
     }
 }
