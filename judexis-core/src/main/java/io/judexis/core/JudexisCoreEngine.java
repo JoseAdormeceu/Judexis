@@ -31,6 +31,22 @@ public final class JudexisCoreEngine {
         return inputBus.publish(profile, snapshot);
     }
 
+    public void markJoin(PlayerProfile profile) {
+        inputBus.markJoin(profile);
+    }
+
+    public void markTeleport(PlayerProfile profile) {
+        inputBus.markTeleport(profile);
+    }
+
+    public void setTicksPerSecond(PlayerProfile profile, double ticksPerSecond) {
+        inputBus.setTicksPerSecond(profile, ticksPerSecond);
+    }
+
+    public void setPingEstimateMillis(PlayerProfile profile, int pingEstimateMillis) {
+        inputBus.setPingEstimateMillis(profile, pingEstimateMillis);
+    }
+
     public void releasePlayer(PlayerProfile profile) {
         inputBus.release(profile);
     }

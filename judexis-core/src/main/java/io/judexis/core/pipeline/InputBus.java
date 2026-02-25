@@ -33,6 +33,36 @@ public interface InputBus {
     Decision publish(PlayerProfile profile, Snapshot snapshot);
 
     /**
+     * Marks a player join transition in context state.
+     *
+     * @param profile player identity
+     */
+    void markJoin(PlayerProfile profile);
+
+    /**
+     * Marks a player teleport transition in context state.
+     *
+     * @param profile player identity
+     */
+    void markTeleport(PlayerProfile profile);
+
+    /**
+     * Updates tick-rate estimate for the player context.
+     *
+     * @param profile player identity
+     * @param ticksPerSecond observed TPS
+     */
+    void setTicksPerSecond(PlayerProfile profile, double ticksPerSecond);
+
+    /**
+     * Updates ping estimate for the player context.
+     *
+     * @param profile player identity
+     * @param pingMillis ping estimate in milliseconds
+     */
+    void setPingEstimateMillis(PlayerProfile profile, int pingMillis);
+
+    /**
      * Clears runtime state for a player.
      *
      * @param profile player identity

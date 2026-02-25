@@ -61,13 +61,29 @@ public final class DefaultInputBus implements InputBus {
         }
         PlayerRuntimeContext runtimeContext = contextRegistry.getOrCreate(profile);
         ContextState state = runtimeContext.getState();
-        updateContext(state, runtimeContext, snapshot);
+        updateContextFromSnapshot(state, runtimeContext, snapshot);
 
         CheckContext checkContext = new CheckContext(profile, state, runtimeContext.getViolationAccumulator());
         for (int i = 0; i < checks.size(); i++) {
             checks.get(i).onSnapshot(checkContext, snapshot);
         }
         return decisionEngine.evaluate(profile, state, runtimeContext.getViolationAccumulator());
+    }
+
+    public void markJoin(PlayerProfile profile) {
+        context(profile).getState().markJoin();
+    }
+
+    public void markTeleport(PlayerProfile profile) {
+        context(profile).getState().markTeleport();
+    }
+
+    public void setTicksPerSecond(PlayerProfile profile, double ticksPerSecond) {
+        context(profile).getState().setTicksPerSecond(ticksPerSecond);
+    }
+
+    public void setPingEstimateMillis(PlayerProfile profile, int pingMillis) {
+        context(profile).getState().setPingEstimateMillis(pingMillis);
     }
 
     public void release(PlayerProfile profile) {
@@ -77,7 +93,14 @@ public final class DefaultInputBus implements InputBus {
         contextRegistry.remove(profile);
     }
 
-    private void updateContext(ContextState state, PlayerRuntimeContext runtimeContext, Snapshot snapshot) {
+    private PlayerRuntimeContext context(PlayerProfile profile) {
+        if (profile == null) {
+            throw new IllegalArgumentException("profile is required");
+        }
+        return contextRegistry.getOrCreate(profile);
+    }
+
+    private void updateContextFromSnapshot(ContextState state, PlayerRuntimeContext runtimeContext, Snapshot snapshot) {
         state.advanceTick();
         if (snapshot instanceof NetworkSnapshot) {
             NetworkSnapshot networkSnapshot = (NetworkSnapshot) snapshot;

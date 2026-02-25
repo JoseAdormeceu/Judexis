@@ -1,0 +1,5 @@
+name: Judexis
+main: io.judexis.adapter.v1_8.JudexisPlugin
+version: 0.1.0-SNAPSHOT
+author: Judexis
+description: Judexis adapter for PaperSpigot 1.8.8
