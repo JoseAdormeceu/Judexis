@@ -1,0 +1,19 @@
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+def localJunit = file('libs/junit-platform-console-standalone-1.10.2.jar')
+
+dependencies {
+    if (localJunit.exists()) {
+        testImplementation files(localJunit)
+    } else {
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
