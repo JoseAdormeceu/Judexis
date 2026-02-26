@@ -1,22 +1,25 @@
 package io.judexis.core.check;
 
 import io.judexis.core.context.ContextState;
+import io.judexis.core.data.PlayerData;
 import io.judexis.core.domain.PlayerProfile;
 import io.judexis.core.violation.Evidence;
-import io.judexis.core.violation.ViolationAccumulator;
+import io.judexis.core.violation.EvidenceRouter;
 
 /**
  * Context passed to checks on each dispatch.
  */
 public final class CheckContext {
     private final PlayerProfile profile;
-    private final ContextState contextState;
-    private final ViolationAccumulator violationAccumulator;
+    private final PlayerData playerData;
+    private final EvidenceRouter evidenceRouter;
+    private final String checkId;
 
-    public CheckContext(PlayerProfile profile, ContextState contextState, ViolationAccumulator violationAccumulator) {
+    public CheckContext(PlayerProfile profile, PlayerData playerData, EvidenceRouter evidenceRouter, String checkId) {
         this.profile = profile;
-        this.contextState = contextState;
-        this.violationAccumulator = violationAccumulator;
+        this.playerData = playerData;
+        this.evidenceRouter = evidenceRouter;
+        this.checkId = checkId;
     }
 
     public PlayerProfile getProfile() {
@@ -24,14 +27,22 @@ public final class CheckContext {
     }
 
     public ContextState getContextState() {
-        return contextState;
-    }
-
-    public ViolationAccumulator getViolationAccumulator() {
-        return violationAccumulator;
+        return playerData.getContextState();
     }
 
     public void emit(Evidence evidence) {
-        violationAccumulator.append(evidence);
+        evidenceRouter.route(profile, checkId, evidence, playerData);
+    }
+
+    public <T> T getCheckState(String stateKey, Class<T> type) {
+        Object state = playerData.getCheckState(checkId + ":" + stateKey);
+        if (state == null) {
+            return null;
+        }
+        return type.cast(state);
+    }
+
+    public void setCheckState(String stateKey, Object state) {
+        playerData.setCheckState(checkId + ":" + stateKey, state);
     }
 }

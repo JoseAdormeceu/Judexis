@@ -1,12 +1,22 @@
 repositories {
+    flatDir {
+        dirs 'libs'
+    }
     maven {
         url = 'https://repo.papermc.io/repository/maven-public/'
     }
 }
 
+def localPaperApi = file('libs/paperspigot-api-1.8.8-R0.1-SNAPSHOT.jar')
+
 dependencies {
     implementation project(':judexis-core')
-    compileOnly 'org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT'
+
+    if (localPaperApi.exists()) {
+        compileOnly files(localPaperApi)
+    } else {
+        compileOnly 'org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT'
+    }
 }
 
 processResources {
