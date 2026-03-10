@@ -43,6 +43,9 @@ public final class TickTask extends BukkitRunnable {
     }
 
     public void run() {
+        if (!Bukkit.isPrimaryThread()) {
+            throw new IllegalStateException("TickTask must run on Bukkit primary thread");
+        }
         tick++;
         double tps = tpsTracker.recordTickAndEstimate();
         Player[] players = Bukkit.getOnlinePlayers().toArray(new Player[0]);

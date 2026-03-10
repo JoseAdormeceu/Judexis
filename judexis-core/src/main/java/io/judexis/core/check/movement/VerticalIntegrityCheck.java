@@ -13,7 +13,6 @@ import io.judexis.core.violation.Evidence;
 import io.judexis.core.violation.EvidenceSeverity;
 import io.judexis.core.violation.EvidenceType;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -40,6 +39,15 @@ public final class VerticalIntegrityCheck implements Check {
             return;
         }
 
+        MovementPredictionContext prediction = MovementPredictionContextFactory.create(
+            context,
+            movementSnapshot,
+            config.getMaxPing(),
+            config.getMinTps(),
+            config.getVelocityGraceTicks(),
+            config.getTeleportGraceTicks()
+        );
+
         AnalysisWindow window = analyzeWindow(context.getMotionHistoryBuffer());
         if (window == null) {
             return;
@@ -57,9 +65,10 @@ public final class VerticalIntegrityCheck implements Check {
         }
 
         String signal = mismatchPattern ? "GROUND_MISMATCH" : "VERTICAL_DRIFT";
-        double severityScore = severityScore(window, verticalScore);
+        double confidenceFactor = prediction.getConfidence().getCombinedFactor();
+        double severityScore = severityScore(window, verticalScore) * confidenceFactor;
 
-        Map<String, String> metadata = buildMetadata(context, window, verticalScore, totalScore, signal, severityScore);
+        Map<String, String> metadata = buildMetadata(context, prediction, window, verticalScore, totalScore, signal, severityScore, confidenceFactor);
         EvidenceSeverity severity = mapSeverity(severityScore);
 
         context.emit(new Evidence(getName(), EvidenceType.MOVEMENT, severity,
@@ -84,12 +93,6 @@ public final class VerticalIntegrityCheck implements Check {
             return true;
         }
         if (state.getWorldChangeTicks() < config.getWorldChangeGraceTicks()) {
-            return true;
-        }
-        if (state.getTicksPerSecond() < config.getMinTps()) {
-            return true;
-        }
-        if (state.getPingEstimateMillis() > config.getMaxPing()) {
             return true;
         }
         return history.size() < config.getMinHistory();
@@ -159,20 +162,20 @@ public final class VerticalIntegrityCheck implements Check {
         return EvidenceSeverity.LOW;
     }
 
-    private Map<String, String> buildMetadata(CheckContext context, AnalysisWindow window,
+    private Map<String, String> buildMetadata(CheckContext context,
+                                              MovementPredictionContext prediction,
+                                              AnalysisWindow window,
                                               double verticalScore, double totalScore,
-                                              String signal, double severityScore) {
-        Map<String, String> metadata = new LinkedHashMap<String, String>();
-        metadata.put("signal", signal);
-        metadata.put("ping", String.valueOf(context.getContextState().getPingEstimateMillis()));
-        metadata.put("tps", format(context.getContextState().getTicksPerSecond()));
+                                              String signal, double severityScore,
+                                              double confidenceFactor) {
+        Map<String, String> metadata = MovementDebugMetadata.base(context, prediction, signal, severityScore);
         metadata.put("window", String.valueOf(window.windowSize));
         metadata.put("mismatches", String.valueOf(window.mismatchCount));
         metadata.put("avgVerticalRawError", format(window.avgVerticalRawError));
         metadata.put("avgVerticalNormalizedError", format(window.avgVerticalNormalizedError));
         metadata.put("verticalScore", format(verticalScore));
         metadata.put("totalScore", format(totalScore));
-        metadata.put("severityScore", format(severityScore));
+        metadata.put("confidenceFactor", format(confidenceFactor));
 
         MotionHistoryBuffer history = context.getMotionHistoryBuffer();
         for (int i = 0; i < 3; i++) {

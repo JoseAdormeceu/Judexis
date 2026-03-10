@@ -15,10 +15,30 @@ public final class MovementSnapshot implements Snapshot {
     private final float yaw;
     private final float pitch;
     private final boolean onGround;
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
+    private final boolean nearGround;
+    private final boolean inLiquid;
+    private final boolean onIce;
+    private final boolean onSlime;
+    private final boolean touchingBlockAbove;
+    private final double blockFriction;
+
+    public MovementSnapshot(long tick, long capturedAtNanos, double x, double y, double z,
+                            double previousX, double previousY, double previousZ,
+                            float yaw, float pitch,
+                            boolean onGround,
+                            boolean nearGround,
+                            boolean inLiquid,
+                            boolean onIce,
+                            boolean onSlime,
+                            boolean touchingBlockAbove,
+                            double blockFriction) {
+=======
 
     public MovementSnapshot(long tick, long capturedAtNanos, double x, double y, double z,
                             double previousX, double previousY, double previousZ,
                             float yaw, float pitch, boolean onGround) {
+>>>>>>> main
         this.tick = tick;
         this.capturedAtNanos = capturedAtNanos;
         this.x = x;
@@ -30,6 +50,15 @@ public final class MovementSnapshot implements Snapshot {
         this.yaw = yaw;
         this.pitch = pitch;
         this.onGround = onGround;
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
+        this.nearGround = nearGround;
+        this.inLiquid = inLiquid;
+        this.onIce = onIce;
+        this.onSlime = onSlime;
+        this.touchingBlockAbove = touchingBlockAbove;
+        this.blockFriction = blockFriction;
+=======
+>>>>>>> main
     }
 
     public long getTick() {
@@ -80,6 +109,33 @@ public final class MovementSnapshot implements Snapshot {
         return onGround;
     }
 
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
+    public boolean isNearGround() {
+        return nearGround;
+    }
+
+    public boolean isInLiquid() {
+        return inLiquid;
+    }
+
+    public boolean isOnIce() {
+        return onIce;
+    }
+
+    public boolean isOnSlime() {
+        return onSlime;
+    }
+
+    public boolean isTouchingBlockAbove() {
+        return touchingBlockAbove;
+    }
+
+    public double getBlockFriction() {
+        return blockFriction;
+    }
+
+=======
+>>>>>>> main
     public double deltaX() {
         return x - previousX;
     }

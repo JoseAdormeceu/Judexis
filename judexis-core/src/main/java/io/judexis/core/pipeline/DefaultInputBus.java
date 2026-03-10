@@ -65,8 +65,6 @@ public final class DefaultInputBus implements InputBus {
         PredictionResult pending = playerData.getPendingPredictionResult();
         MotionState pendingState = playerData.getPendingPredictedState();
 
-        playerData.getErrorAccumulator().tickDecay();
-
         if (pending != null && pendingState != null) {
             ErrorMeasurement measurement = predictionComparator.computeError(movementSnapshot, pending, contextState);
             playerData.setLatestErrorMeasurement(measurement);
@@ -108,9 +106,12 @@ public final class DefaultInputBus implements InputBus {
             movementSnapshot.deltaY(),
             movementSnapshot.deltaZ(),
             movementSnapshot.isOnGround(),
-            false,
-            false,
-            false,
+            movementSnapshot.isInLiquid(),
+            movementSnapshot.isOnIce(),
+            movementSnapshot.isOnSlime(),
+            movementSnapshot.isNearGround(),
+            movementSnapshot.isTouchingBlockAbove(),
+            movementSnapshot.getBlockFriction(),
             airTicks,
             groundTicks
         );

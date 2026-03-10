@@ -26,6 +26,19 @@ public final class SnapshotBridge {
     public MovementSnapshot movement(PlayerMoveEvent event, long tick) {
         Location from = event.getFrom();
         Location to = event.getTo() == null ? from : event.getTo();
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
+        Player player = event.getPlayer();
+        Block feet = to.getBlock();
+        Block below = to.clone().subtract(0.0D, 1.0D, 0.0D).getBlock();
+        Block above = to.clone().add(0.0D, 1.0D, 0.0D).getBlock();
+
+        boolean inLiquid = isLiquid(feet.getType());
+        boolean onIce = below.getType() == Material.ICE || below.getType() == Material.PACKED_ICE;
+        boolean onSlime = below.getType() == Material.SLIME_BLOCK;
+        boolean touchingBlockAbove = above.getType() != Material.AIR;
+
+=======
+>>>>>>> main
         return new MovementSnapshot(
             tick,
             System.nanoTime(),
@@ -37,7 +50,17 @@ public final class SnapshotBridge {
             from.getZ(),
             to.getYaw(),
             to.getPitch(),
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
+            player.isOnGround(),
+            player.isOnGround(),
+            inLiquid,
+            onIce,
+            onSlime,
+            touchingBlockAbove,
+            resolveFriction(below.getType())
+=======
             event.getPlayer().isOnGround()
+>>>>>>> main
         );
     }
 
@@ -96,8 +119,12 @@ public final class SnapshotBridge {
     }
 
     private WorldMedium resolveMedium(Material material) {
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
+        if (isLiquid(material)) {
+=======
         if (material == Material.WATER || material == Material.STATIONARY_WATER
             || material == Material.LAVA || material == Material.STATIONARY_LAVA) {
+>>>>>>> main
             return WorldMedium.LIQUID;
         }
         if (material == Material.AIR) {
@@ -105,4 +132,25 @@ public final class SnapshotBridge {
         }
         return WorldMedium.SOLID;
     }
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
+
+    private boolean isLiquid(Material material) {
+        return material == Material.WATER || material == Material.STATIONARY_WATER
+            || material == Material.LAVA || material == Material.STATIONARY_LAVA;
+    }
+
+    private double resolveFriction(Material material) {
+        if (material == Material.ICE || material == Material.PACKED_ICE) {
+            return 0.98D;
+        }
+        if (material == Material.SLIME_BLOCK) {
+            return 0.8D;
+        }
+        if (material == Material.AIR) {
+            return 0.91D;
+        }
+        return 0.6D;
+    }
+=======
+>>>>>>> main
 }

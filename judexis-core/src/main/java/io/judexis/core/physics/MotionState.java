@@ -14,12 +14,16 @@ public final class MotionState {
     private final boolean inLiquid;
     private final boolean onIce;
     private final boolean onSlime;
+    private final boolean nearGround;
+    private final boolean touchingBlockAbove;
+    private final double surfaceFriction;
     private final int airTicks;
     private final int groundTicks;
 
     public MotionState(double x, double y, double z,
                        double motionX, double motionY, double motionZ,
                        boolean onGround, boolean inLiquid, boolean onIce, boolean onSlime,
+                       boolean nearGround, boolean touchingBlockAbove, double surfaceFriction,
                        int airTicks, int groundTicks) {
         this.x = x;
         this.y = y;
@@ -31,6 +35,9 @@ public final class MotionState {
         this.inLiquid = inLiquid;
         this.onIce = onIce;
         this.onSlime = onSlime;
+        this.nearGround = nearGround;
+        this.touchingBlockAbove = touchingBlockAbove;
+        this.surfaceFriction = surfaceFriction;
         this.airTicks = airTicks;
         this.groundTicks = groundTicks;
     }
@@ -45,6 +52,9 @@ public final class MotionState {
     public boolean isInLiquid() { return inLiquid; }
     public boolean isOnIce() { return onIce; }
     public boolean isOnSlime() { return onSlime; }
+    public boolean isNearGround() { return nearGround; }
+    public boolean isTouchingBlockAbove() { return touchingBlockAbove; }
+    public double getSurfaceFriction() { return surfaceFriction; }
     public int getAirTicks() { return airTicks; }
     public int getGroundTicks() { return groundTicks; }
 }

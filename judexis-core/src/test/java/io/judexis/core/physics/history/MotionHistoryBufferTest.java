@@ -27,8 +27,10 @@ class MotionHistoryBufferTest {
     }
 
     private void addEntry(MotionHistoryBuffer buffer, long tick) {
-        MovementSnapshot snapshot = new MovementSnapshot(tick, tick * 10L, tick, tick, tick, tick - 1, tick - 1, tick - 1, 0.0F, 0.0F, false);
-        MotionState state = new MotionState(tick, tick, tick, 0.1D, 0.1D, 0.1D, false, false, false, false, 1, 0);
+        MovementSnapshot snapshot = new MovementSnapshot(tick, tick * 10L, tick, tick, tick, tick - 1, tick - 1, tick - 1, 0.0F, 0.0F,
+            false, false, false, false, false, false, 0.91D);
+        MotionState state = new MotionState(tick, tick, tick, 0.1D, 0.1D, 0.1D,
+            false, false, false, false, false, false, 0.91D, 1, 0);
         PredictionResult result = new PredictionResult(state, 0.1D, 0.1D, 0.1D, tick, tick, tick, 0.0D, 0.03D);
         buffer.add(snapshot, state, result);
     }

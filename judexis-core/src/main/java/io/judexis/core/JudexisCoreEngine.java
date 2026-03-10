@@ -25,6 +25,12 @@ import java.util.List;
 
 /**
  * Core composition root that wires runtime stores, checks, policy, and input bus.
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
+ *
+ * Thread-safety contract: this engine expects all ingest and context update calls
+ * for a player to be executed from a single thread in tick order.
+=======
+>>>>>>> main
  */
 public final class JudexisCoreEngine {
     private final PlayerDataStore playerDataStore;
