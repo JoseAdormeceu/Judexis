@@ -39,9 +39,12 @@ public final class ErrorAccumulator {
         this.verticalWindow = new double[windowSize];
     }
 
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
     /**
      * Adds one measurement and applies decay exactly once for that measurement.
      */
+=======
+>>>>>>> main
     public void addMeasurement(ErrorMeasurement measurement) {
         if (count == windowSize) {
             horizontalWindowSum -= horizontalWindow[cursor];
@@ -65,6 +68,15 @@ public final class ErrorAccumulator {
         totalScore = horizontalScore + verticalScore;
     }
 
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
+=======
+    public void tickDecay() {
+        horizontalScore = horizontalScore * decay;
+        verticalScore = verticalScore * decay;
+        totalScore = horizontalScore + verticalScore;
+    }
+
+>>>>>>> main
     public double getHorizontalScore() { return horizontalScore; }
     public double getVerticalScore() { return verticalScore; }
     public double getCurrentScore() { return totalScore; }

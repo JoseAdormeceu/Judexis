@@ -19,11 +19,19 @@ public final class PhysicsEngine {
         return motionY - GRAVITY;
     }
 
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
     public double applyFriction(double horizontalMotion, boolean onGround, boolean onIce, boolean onSlime, double surfaceFriction) {
         if (!onGround) {
             return horizontalMotion * AIR_HORIZONTAL_DRAG;
         }
         double base = surfaceFriction > 0.0D ? surfaceFriction : GROUND_FRICTION;
+=======
+    public double applyFriction(double horizontalMotion, boolean onGround, boolean onIce, boolean onSlime) {
+        if (!onGround) {
+            return horizontalMotion * AIR_HORIZONTAL_DRAG;
+        }
+        double base = GROUND_FRICTION;
+>>>>>>> main
         if (onIce) {
             base = ICE_FRICTION;
         } else if (onSlime) {
@@ -56,7 +64,11 @@ public final class PhysicsEngine {
         double motionX = current.getMotionX();
         double motionY = current.getMotionY();
         double motionZ = current.getMotionZ();
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
         boolean onGround = current.isOnGround() || current.isNearGround();
+=======
+        boolean onGround = current.isOnGround();
+>>>>>>> main
 
         motionY = applyJump(onGround, jumpRequested, motionY);
         if (jumpRequested && onGround) {
@@ -66,21 +78,33 @@ public final class PhysicsEngine {
         motionY = applyGravity(motionY, onGround, current.isInLiquid());
         motionY = applyAirDrag(motionY, current.isInLiquid());
 
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
         motionX = applyFriction(motionX, onGround, current.isOnIce(), current.isOnSlime(), current.getSurfaceFriction());
         motionZ = applyFriction(motionZ, onGround, current.isOnIce(), current.isOnSlime(), current.getSurfaceFriction());
 
         if (current.isTouchingBlockAbove() && motionY > 0.0D) {
             motionY = -0.08D;
         }
+=======
+        motionX = applyFriction(motionX, onGround, current.isOnIce(), current.isOnSlime());
+        motionZ = applyFriction(motionZ, onGround, current.isOnIce(), current.isOnSlime());
+>>>>>>> main
 
         double nextX = current.getX() + motionX;
         double nextY = current.getY() + motionY;
         double nextZ = current.getZ() + motionZ;
 
         boolean nextGround = onGround;
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
         if (nextGround && motionY < 0.0D) {
             motionY = 0.0D;
             nextY = current.getY();
+=======
+        if (nextY <= 0.0D) {
+            nextY = 0.0D;
+            motionY = 0.0D;
+            nextGround = true;
+>>>>>>> main
         }
 
         int airTicks = nextGround ? 0 : current.getAirTicks() + 1;
@@ -90,7 +114,10 @@ public final class PhysicsEngine {
             nextX, nextY, nextZ,
             motionX, motionY, motionZ,
             nextGround, current.isInLiquid(), current.isOnIce(), current.isOnSlime(),
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
             current.isNearGround(), current.isTouchingBlockAbove(), current.getSurfaceFriction(),
+=======
+>>>>>>> main
             airTicks, groundTicks
         );
 

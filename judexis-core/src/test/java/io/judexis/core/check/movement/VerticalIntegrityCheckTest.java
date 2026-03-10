@@ -33,6 +33,7 @@ class VerticalIntegrityCheckTest {
     }
 
     @Test
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
     void highPingLowersSeverityInsteadOfHardSkipping() {
         VerticalIntegrityCheck check = new VerticalIntegrityCheck(new VerticalIntegrityConfig());
 
@@ -51,6 +52,8 @@ class VerticalIntegrityCheckTest {
     }
 
     @Test
+=======
+>>>>>>> main
     void patternDetectionRequiresMultipleTicks() {
         VerticalIntegrityCheck check = new VerticalIntegrityCheck(new VerticalIntegrityConfig());
         TestEnv env = buildEnv(80, 20.0D, 80, 10, 0.5D);
@@ -117,8 +120,12 @@ class VerticalIntegrityCheckTest {
             boolean mismatch = i < mismatches;
             MovementSnapshot snapshot = movement(i + 1L, reportedGround);
             MotionState predicted = new MotionState(snapshot.getX(), snapshot.getY(), snapshot.getZ(),
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
                 snapshot.deltaX(), snapshot.deltaY(), snapshot.deltaZ(), !mismatch, false, false, false,
                 !mismatch, false, 0.6D, 1, 0);
+=======
+                snapshot.deltaX(), snapshot.deltaY(), snapshot.deltaZ(), !mismatch, false, false, false, 1, 0);
+>>>>>>> main
             ErrorMeasurement measurement = new ErrorMeasurement(0.01D, 0.06D, 0.01D,
                 0.014D, 0.06D, 0.062D, mismatch ? normalizedError : 0.7D, 0.03D);
             PredictionResult prediction = new PredictionResult(predicted,
@@ -131,8 +138,12 @@ class VerticalIntegrityCheckTest {
 
     private MovementSnapshot movement(long tick, boolean onGround) {
         return new MovementSnapshot(tick, tick * 1_000_000L, 10.0D + tick, 70.0D, 10.0D,
+<<<<<<< codex/generate-structure-for-judexis-anti-cheat-system-xj4ljw
             9.8D + tick, 70.0D, 10.0D, 0.0F, 0.0F,
             onGround, onGround, false, false, false, false, 0.6D);
+=======
+            9.8D + tick, 70.0D, 10.0D, 0.0F, 0.0F, onGround);
+>>>>>>> main
     }
 
     private Evidence lastEvidence(PlayerData data) {
