@@ -1,0 +1,3 @@
+rootProject.name = 'judexis'
+include 'judexis-core'
+include 'judexis-adapter-1_8'
